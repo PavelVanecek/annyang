@@ -144,7 +144,7 @@
           confidence = results[i].confidence;
           isFinal = results.isFinal;
           if (debugState) {
-            root.console.log('Speech recognized: %c'+commandText, debugStyle);
+            root.console.log('Speech recognized: %c'+commandText, debugStyle, 'with confidence', confidence, '(isFinal: ' + isFinal + ')');
           }
 
           // try and match recognized text to one of the commands on the list
