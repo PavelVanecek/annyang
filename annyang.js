@@ -92,6 +92,11 @@
       // Sets the language to the default 'en-US'. This can be changed with annyang.setLanguage()
       recognition.lang = 'en-US';
 
+      // Interim results provide faster results with lower accuracy first,
+      // and more accurate results after a while.
+      // this can be changed with annyang.setInterimResults()
+      recognition.interimResults = false;
+
       recognition.onstart   = function()      { invokeCallbacks(callbacks.start); };
 
       recognition.onerror   = function(event) {
@@ -131,11 +136,13 @@
       recognition.onresult  = function(event) {
         invokeCallbacks(callbacks.result);
         var results = event.results[event.resultIndex];
-        var commandText;
+        var commandText, confidence, isFinal;
         // go over each of the 5 results and alternative results received (we've set maxAlternatives to 5 above)
         for (var i = 0; i<results.length; i++) {
           // the text recognized
           commandText = results[i].transcript.trim();
+          confidence = results[i].confidence;
+          isFinal = results.isFinal;
           if (debugState) {
             root.console.log('Speech recognized: %c'+commandText, debugStyle);
           }
@@ -150,6 +157,8 @@
                 if (parameters.length) {
                   root.console.log('with parameters', parameters);
                 }
+                // includes isFinal as last parameter
+                parameters.push(isFinal);
               }
               // execute the matched command
               commandsList[j].callback.apply(this, parameters);
@@ -209,6 +218,15 @@
     setLanguage: function(language) {
       initIfNeeded();
       recognition.lang = language;
+    },
+
+    /**
+     * Interim results provide faster results with lower accuracy first,
+     * and more accurate results after a while.
+     * @param{boolean=} interimResults defaults to true
+    */
+    setInterimResults: function(interimResults) {
+      recognition.interimResults = ('undefined' === typeof interimResults)? true : !!interimResults;
     },
 
     // Add additional commands that annyang will respond to. Similar in syntax to annyang.init()

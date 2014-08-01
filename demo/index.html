@@ -31,7 +31,8 @@
       scrollTo("#section_hello");
     };
 
-    var showFlickr = function(tag) {
+    var showFlickr = function(tag, isFinal) {
+      if (!isFinal) { return }
       $('#flickrGallery').show();
       $('#flickrLoader p').text('Searching for '+tag).fadeIn('fast');
       var url = '//api.flickr.com/services/rest/?method=flickr.photos.search&api_key=a828a6571bb4f0ff8890f7a386d61975&sort=interestingness-desc&per_page=9&format=json&callback=jsonFlickrApi&tags='+tag;
@@ -85,6 +86,9 @@
 
     // Add voice commands to respond to
     annyang.addCommands(commands);
+
+    // (optional) interimResults will fire suggestions
+    // annyang.setInterimResults();
 
     // OPTIONAL: Set a language for speech recognition (defaults to English)
     annyang.setLanguage('en');
