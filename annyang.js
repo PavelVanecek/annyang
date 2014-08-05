@@ -27,6 +27,7 @@
   var recognition;
   var callbacks = { start: [], error: [], end: [], result: [], resultMatch: [], resultNoMatch: [], errorNetwork: [], errorPermissionBlocked: [], errorPermissionDenied: [] };
   var autoRestart;
+  var allowMultipleCallbacks = false;
   var lastStartedAt = 0;
   var debugState = false;
   var debugStyle = 'font-weight: bold; color: #00f;';
@@ -145,6 +146,7 @@
             var result = commandsList[j].command.exec(commandText);
             if (result) {
               var parameters = result.slice(1);
+              var callbackReturnValue;
               if (debugState) {
                 root.console.log('command matched: %c'+commandsList[j].originalPhrase, debugStyle);
                 if (parameters.length) {
@@ -153,8 +155,10 @@
               }
               // execute the matched command
               commandsList[j].callback.apply(this, parameters);
-              invokeCallbacks(callbacks.resultMatch);
-              return true;
+              callbackReturnValue = invokeCallbacks(callbacks.resultMatch);
+              if (allowMultipleCallbacks === false || callbackReturnValue === false) {
+                return true;
+              }
             }
           }
         }
@@ -209,6 +213,10 @@
     setLanguage: function(language) {
       initIfNeeded();
       recognition.lang = language;
+    },
+
+    allowMultipleCallbacks: function(allowMultipleCallbacks) {
+      allowMultipleCallbacks = ('undefined' === typeof allowMultipleCallbacks)? true : !!allowMultipleCallbacks;
     },
 
     // Add additional commands that annyang will respond to. Similar in syntax to annyang.init()
