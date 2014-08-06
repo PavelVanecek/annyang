@@ -257,6 +257,16 @@
       allowMultipleCallbacks = ('undefined' === typeof allowMultipleCallbacks)? true : !!allowMultipleCallbacks;
     },
 
+    /**
+     * maxAlternatives must be a number higher than zero
+     */
+    setMaxAlternatives: function(maxAlternatives) {
+      if (isNaN(maxAlternatives) || maxAlternatives < 1) {
+        throw new Error('please provide number >= 1');
+      }
+      recognition.maxAlternatives = maxAlternatives;
+    },
+
     // Add additional commands that annyang will respond to. Similar in syntax to annyang.init()
     addCommands: function(commands) {
       var cb,
