@@ -109,4 +109,6 @@ module.exports = function(grunt) {
 
   grunt.registerTask('dev', ['default', 'connect', 'watch']);
 
+  grunt.registerTask('travis', ['jshint']);
+
 };
